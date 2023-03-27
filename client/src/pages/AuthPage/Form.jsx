@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   TextField,
   Link,
@@ -15,6 +15,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import apiCalls from "../../EndPoints/Apicalls";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../Redux/reducers/userReducer";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const initialValuesSignUP = {
   firstName: "",
@@ -29,6 +33,25 @@ const initialValuesSignIn = {
 };
 
 export default function Form(props) {
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userToken = localStorage.getItem("userToken");
+
+  function handleClickVariant(variant, response) {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(response, { variant });
+  }
+  useEffect(() => {
+    if (props.access === "signin") {
+      if (userToken) {
+        navigate("/");
+      } else {
+        navigate("/signin" || " /signup");
+      }
+    }
+  }, [navigate, userToken]);
+
   const initialValues =
     props.access === "signup" ? initialValuesSignUP : initialValuesSignIn;
   const schema = props.access === "signup" ? signUpSchema : signInSchema;
@@ -39,14 +62,16 @@ export default function Form(props) {
       onSubmit: async (values, action) => {
         if (props.access === "signup") {
           const response = await apiCalls.signUp(values);
-          console.log(response, "response loged at the signup");
+          console.log(response);
         } else {
+          console.log("signin frontend working");
           const response = await apiCalls.signIn(values);
-          console.log(
-            response.data.userToken,
-            "token loged at the frontend in signin"
-          );
-          // if(response.data.userToken)
+
+          if (response.data.userToken && response.data.userData) {
+            localStorage.setItem("userToken", response.data.userToken);
+            dispatch(userActions.setUserData(response.data.userData));
+            navigate("/");
+          }
         }
         action.resetForm();
       },
@@ -143,7 +168,7 @@ export default function Form(props) {
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link href="/user/signup" variant="body2">
+                    <Link href="/signup" variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
@@ -177,7 +202,7 @@ export default function Form(props) {
                 onSubmit={handleSubmit}
                 sx={{ mt: 3 }}
               >
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                   <Grid item xs={12} sm={6}>
                     <TextField
                       autoComplete="given-name"
@@ -248,7 +273,7 @@ export default function Form(props) {
                       sx={{ borderRadius: 3 }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid marginTop={-2} item xs={12}>
                     <TextField
                       margin="normal"
                       required
@@ -287,7 +312,7 @@ export default function Form(props) {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid marginTop={-3} item xs={12}>
                     <TextField
                       margin="normal"
                       required
@@ -347,7 +372,7 @@ export default function Form(props) {
                 </Button>
                 <Grid container justifyContent="flex-end">
                   <Grid item>
-                    <Link href="/user/signin" variant="body2">
+                    <Link href="/signin" variant="body2">
                       Already have an account? Sign in
                     </Link>
                   </Grid>

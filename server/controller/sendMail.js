@@ -11,7 +11,6 @@ const {
   MAILING_SERVICE_REFRESH_TOKEN,
   SENDER_EMAIL_ADDRESS,
 } = process.env;
-
 const oauth2client = new google.Auth.OAuth2Client(
   MAILING_SERVICE_CLIENT_ID,
   MAILING_SERVICE_CLIENT_SECRET,

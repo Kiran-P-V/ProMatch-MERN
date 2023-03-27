@@ -8,7 +8,7 @@ const persistConfig = {
   key: "persist-key",
   storage,
 };
-
+  
 const reducer = combineReducers({
   user: userReducer,
   admin:adminReducer

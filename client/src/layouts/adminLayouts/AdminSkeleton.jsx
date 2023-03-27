@@ -18,21 +18,30 @@ import Typography from "@mui/material/Typography";
 import { Avatar } from "@mui/material";
 import Logo from "../../images/logo.png";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { useDispatch } from "react-redux";
-import { adminActions } from "../../Redux/reducers/adminReducer";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
 export const AdminSkeleton = (props) => {
-  const dispatch = useDispatch();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const navigate = useNavigate();
+  const adminToken = localStorage.getItem("adminToken");
+  console.log(adminToken);
+  useEffect(() => {
+    if (adminToken) {
+      navigate("/admin/home");
+    } else {
+      navigate("/admin/signin");
+    }
+  }, [adminToken, navigate]);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
   const handleLogoutAdmin = () => {
-    dispatch(adminActions.setAdminLogout(null));
+    localStorage.removeItem("adminToken");
+    navigate("/admin/signin");
   };
 
   const drawer = (

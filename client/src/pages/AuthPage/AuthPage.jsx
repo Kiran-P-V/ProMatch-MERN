@@ -5,8 +5,9 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Logo from "../../images/logo.png";
-import Form from "./Form";
 import { AdminForm } from "./AdminForm";
+import CommonForm from "./Form";
+import { ExpertForm } from "./ExpertForm";
 
 const theme = createTheme({
   palette: {
@@ -22,6 +23,7 @@ const theme = createTheme({
   },
 });
 export default function AuthPage(props) {
+  console.log("Auth page loading with props", props);
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -53,9 +55,11 @@ export default function AuthPage(props) {
               />
             </Avatar>
             {props.access === "signin" || props.access === "signup" ? (
-              <Form access={props.access} />
+              <CommonForm access={props.access} />
             ) : props.access === "adminSignin" ? (
               <AdminForm access={props.access} />
+            ) : props.access === "expertSignup" ? (
+              <ExpertForm access={props.access} />
             ) : null}
           </Box>
         </Container>

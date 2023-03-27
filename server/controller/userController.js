@@ -1,5 +1,4 @@
 const Users = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const tokenSecret = process.env.TOKENSECRET;
@@ -39,7 +38,10 @@ const postSignUp = async (req, res) => {
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ status: "error", error: err.message });
+    res.status(500).json({
+      status: "error",
+      error: "Error occured while processing the request",
+    });
   }
 };
 
@@ -50,7 +52,7 @@ const activateEmail = async (req, res) => {
       activationToken,
       process.env.ACTIVATION_TOKEN_SECRET
     );
-    const { firstName, lastName, email } = user;
+    const { firstName, lastName, email, password } = user;
     const userAlreadyExist = await Users.findOne({ email });
     if (userAlreadyExist) {
       return res.status(400).json({ message: "This email already exist" });
@@ -59,6 +61,7 @@ const activateEmail = async (req, res) => {
         firstName,
         lastName,
         email,
+        password,
       });
 
       await newUser.save();
@@ -68,7 +71,10 @@ const activateEmail = async (req, res) => {
     console.log(user);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ status: "error", error: err.message });
+    res.status(500).json({
+      status: "error",
+      error: "Error occured while processing your request",
+    });
   }
 };
 
@@ -84,6 +90,7 @@ const postSignIn = async (req, res) => {
           status: "tockenCreated",
           message: "Login successful",
           userToken,
+          userData,
         });
       } else {
         res.json({ status: "error", error: "Password or Email is incorrect" });
@@ -95,7 +102,10 @@ const postSignIn = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.json({ status: "error", error: err.message });
+    res.json({
+      status: "error",
+      error: "Error occured while processing the request",
+    });
   }
 };
 

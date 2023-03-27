@@ -29,8 +29,11 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { Logout, Settings, PersonAdd } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+  const [checkLogout, setCheckLogout] = useState(false);
+  const navigate = useNavigate();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -42,7 +45,16 @@ export const Navbar = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  // if (checkLogout === true && navigate.location.pathname !== "/") {
+  //   navigate("/");
+  // }
+  const handleClose = (req) => {
+    if (req === "logout") {
+      console.log("helloww")
+      localStorage.removeItem("userToken");
+      setCheckLogout(true);
+      navigate("/signin");
+    }
     setAnchorEl(null);
   };
   return (
@@ -264,8 +276,8 @@ export const Navbar = () => {
                       },
                     },
                   }}
-                  transformOrigin={{ horizontal: "-10px", vertical: "top" }}
-                  anchorOrigin={{ horizontal: "-10px", vertical: "bottom" }}
+                  transformOrigin={{ horizontal: -10, vertical: "top" }}
+                  anchorOrigin={{ horizontal: -10, vertical: "bottom" }}
                 >
                   <MenuItem onClick={handleClose}>
                     <Avatar /> Profile
@@ -286,7 +298,7 @@ export const Navbar = () => {
                     </ListItemIcon>
                     Settings
                   </MenuItem>
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={() => handleClose("logout")}>
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>

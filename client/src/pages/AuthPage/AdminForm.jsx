@@ -13,8 +13,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import apiCalls from "../../EndPoints/Apicalls";
 import { signInSchema } from "../../schemas/FormSchema";
-import { useDispatch, useSelector } from "react-redux";
-import { adminActions } from "../../Redux/reducers/adminReducer";
 import { useSnackbar } from "notistack";
 
 const initialValues = {
@@ -24,21 +22,20 @@ const initialValues = {
 export const AdminForm = (props) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userToken = useSelector((state) => state.admin.token);
 
   useEffect(() => {
-    if (userToken) {
+    const adminToken = localStorage.getItem("adminToken");
+
+    if (adminToken) {
       navigate("/admin/home");
     } else {
       navigate("/admin/signin");
     }
-  }, [userToken, navigate]);
+  }, [navigate]);
 
   const schema = signInSchema;
   function handleClickVariant(variant, response) {
-    // variant could be success, error, warning, info, or default
     enqueueSnackbar(response, { variant });
   }
 
@@ -54,7 +51,11 @@ export const AdminForm = (props) => {
             handleClickVariant("error", response.message);
           }
           if (response.data.data.adminToken) {
-            dispatch(adminActions.setAdminLogin(response.data.data.adminToken));
+            console.log("setlocalstorage - if condition working");
+            console.log(response.data.data.adminToken);
+            const token = response.data.data.adminToken;
+            localStorage.setItem("adminToken", token);
+
             handleClickVariant("info", response.data.message);
             navigate("/admin/home");
           }
