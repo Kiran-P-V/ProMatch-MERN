@@ -26,13 +26,20 @@ const expertSchema = mongoose.Schema({
   },
   isExpert: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   city: {
     type: String,
   },
   idProof: {
-    type: String,
+    publicId: {
+      type: String,
+      require: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
   },
 });
 module.exports = mongoose.model("expert", expertSchema);

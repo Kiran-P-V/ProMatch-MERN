@@ -16,9 +16,12 @@ import "./ExpertForm.css";
 import { LocationForm } from "../../components/UserComponents/UseGeoLocation";
 import { ImageUpload } from "../../components/UserComponents/ImageUpload";
 import { expertSignUpSchema } from "../../schemas/FormSchema";
-import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import ExpertApiCalls from "../../EndPoints/ExpertApiCalls";
+import { useSnackbar } from "notistack";
+import LoadingButton from "@mui/lab/LoadingButton";
+import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
+import { boolean } from "yup";
 
 const initialValues = {
   firstName: "",
@@ -51,8 +54,15 @@ const theme = createTheme();
 export const ExpertForm = () => {
   const [imageData, setData] = useState("");
   const [cityData, setCityData] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
   const isSmallScreen = useMediaQuery("(max-width: 960px)");
+  const [submitting, setSubmitting] = useState(false);
+
+  function handleClickVariant(variant, response) {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(response, { variant });
+  }
 
   const schema = expertSignUpSchema;
 
@@ -61,17 +71,30 @@ export const ExpertForm = () => {
       initialValues: initialValues,
       validationSchema: schema,
       onSubmit: async (values, action) => {
-        const response = await ExpertApiCalls.expertSignup({
-          values,
-          imageData,
-          cityData,
-        });
-        action.resetForm();
+        setSubmitting(true);
+        if (imageData) {
+          const response = await ExpertApiCalls.expertSignup({
+            values,
+            imageData,
+            cityData,
+          });
+          console.log(response);
+          if (response.status === "success") {
+            handleClickVariant("info", response.message);
+          } else {
+            handleClickVariant("error", response.message);
+          }
+          action.resetForm();
+          setSubmitting(false);
+        } else {
+          setErrorMessage("Please upload an ID Proof");
+        }
       },
     });
 
   const handleDataChange = (newData) => {
     setData(newData);
+    setErrorMessage("");
   };
 
   const handleCityData = (city) => {
@@ -251,14 +274,30 @@ export const ExpertForm = () => {
                     <LocationForm onDataUpdate={handleCityData} />
                   </Grid>
                   <Grid item xs={12} sm={12}>
+                    <Typography variant="caption" sx={{ color: "red" }}>
+                      {errorMessage}
+                    </Typography>
+                    <br />
+
                     <ImageUpload onDataUpdate={handleDataChange} />
                   </Grid>
                 </Grid>
               </Stack>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                {/* <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
                   Sign Up
-                </Button>
+                </Button> */}
+                <LoadingButton
+                  type="submit"
+                  sx={{ mt: 3, mb: 2 }}
+                  loading={submitting}
+                  color="info"
+                  loadingPosition="end"
+                  endIcon={<BuildRoundedIcon />}
+                  variant="contained"
+                >
+                  Sign Up
+                </LoadingButton>
               </Box>
 
               <Grid container justifyContent="flex-end">

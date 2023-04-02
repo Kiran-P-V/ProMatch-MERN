@@ -24,5 +24,4 @@ export const expertSignUpSchema = Yup.object({
     .min(10)
     .max(10)
     .required("Please enter a valid phone number "),
-  // image: Yup.string().required("Id proof is required for verification"),
 });

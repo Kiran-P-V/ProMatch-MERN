@@ -20,7 +20,6 @@ export const ImageUpload = (props) => {
       const result = reader.result;
       setImageUrl(result);
       props.onDataUpdate(result);
-      
     };
   };
 

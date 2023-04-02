@@ -62,14 +62,19 @@ export default function Form(props) {
       onSubmit: async (values, action) => {
         if (props.access === "signup") {
           const response = await apiCalls.signUp(values);
+          handleClickVariant("info", response.data.message);
           console.log(response);
         } else {
           console.log("signin frontend working");
           const response = await apiCalls.signIn(values);
+          if (response.data.error) {
+            handleClickVariant("error", response.data.error);
+          }
 
           if (response.data.userToken && response.data.userData) {
             localStorage.setItem("userToken", response.data.userToken);
             dispatch(userActions.setUserData(response.data.userData));
+            handleClickVariant("info", response.data.message);
             navigate("/");
           }
         }

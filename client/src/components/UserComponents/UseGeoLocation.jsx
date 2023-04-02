@@ -3,6 +3,7 @@ import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
 import { useEffect, useState } from "react";
 
 export function LocationForm(props) {
+  const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [currentLocation, setCurrentLocation] = useState("");
 
   const handleFetchLocation = async () => {
@@ -18,9 +19,7 @@ export function LocationForm(props) {
       props.onDataUpdate(output.city);
     } catch (error) {
       console.error("Error getting current position:", error);
-      alert(
-        "Error getting current position. Please enable location services and try again."
-      );
+      setCityErrorMessage("Please enable location services ");
     }
   };
 
@@ -45,6 +44,9 @@ export function LocationForm(props) {
       <IconButton onClick={handleClick} color="secondary">
         <FmdGoodRoundedIcon />
         <Typography>{currentLocation}</Typography>
+        <Typography variant="caption" sx={{ color: "red" }}>
+          {cityErrorMessage}
+        </Typography>
       </IconButton>
       <Popover
         id={id}

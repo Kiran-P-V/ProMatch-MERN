@@ -1,8 +1,8 @@
-
-import React from 'react'
+import React from "react";
+import DataTable from "../../../components/AdminComponents/ExpertTable";
+import { AdminSkeleton } from "../../../layouts/adminLayouts/AdminSkeleton";
 
 export const AdminExpert = () => {
-  return (
-    <div>helo</div>
-  )
-}
+  console.log("Admin expert page is rendering");
+  return <AdminSkeleton props={<DataTable />} />;
+};

@@ -1,0 +1,6 @@
+.css-vc9ldr-MuiDataGrid-root {
+  --unstable_DataGrid-overlayBackground: rgba(255, 255, 255, 0.38) !important;
+}
+.MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-colorInherit MuiIconButton-sizeMedium css-zylse7-MuiButtonBase-root-MuiIconButton-root{
+    background-color: aliceblue;
+}

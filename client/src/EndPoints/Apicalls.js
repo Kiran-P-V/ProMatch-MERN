@@ -8,13 +8,13 @@ const signUp = async (userData) => {
     return response;
   } catch (error) {
     console.log(error.message);
-    return error.response.data;
+    return error.response;
   }
 };
 
 const signIn = async (userData) => {
   try {
-    console.log(userData)
+    console.log(userData);
     const response = await axios.post("/user/signin", userData);
     return response;
   } catch (error) {
@@ -45,11 +45,22 @@ const adminSignIn = async (userData) => {
     return error.response.data;
   }
 };
+
+const fetchExpertData = async () => {
+  try {
+    const response = await axios.get("/admin/expertdata");
+    return response.data.expertData;
+  } catch (error) {
+    console.log(error.message);
+    return error.response.data;
+  }
+};
 const apiCalls = {
   signUp,
   signIn,
   adminSignIn,
   activateMail,
+  fetchExpertData,
 };
 
 export default apiCalls;

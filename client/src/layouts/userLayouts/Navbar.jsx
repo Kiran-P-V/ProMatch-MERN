@@ -50,7 +50,7 @@ export const Navbar = () => {
   // }
   const handleClose = (req) => {
     if (req === "logout") {
-      console.log("helloww")
+      console.log("helloww");
       localStorage.removeItem("userToken");
       setCheckLogout(true);
       navigate("/signin");
@@ -164,7 +164,7 @@ export const Navbar = () => {
                 anchor="left"
                 open={isDrawerOpen}
                 onClose={handleCloseDrawer}
-                PaperProps={{ sx: { backgroundColor: "secondary.main" } }}
+                PaperProps={{ sx: { backgroundColor: "black" } }}
               >
                 <List
                   sx={{

@@ -3,8 +3,9 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const tokenSecret = process.env.TOKENSECRET;
+const expertSchema = require("../models/expertModel");
 
-exports.postSignIn = asyncHandler(async (req, res) => {
+exports.postSignIn = async (req, res) => {
   try {
     const { email, password } = req.body;
     const isAdmin = await adminModel.findOne({ email });
@@ -34,4 +35,22 @@ exports.postSignIn = asyncHandler(async (req, res) => {
     console.error(err.message);
     res.status(500).json({ status: "error", message: "Server error" });
   }
-});
+};
+
+exports.getExpertData = async (req, res) => {
+  console.log("expert data fetching ");
+  try {
+    const expertData = await expertSchema.find({});
+    if (expertData) {
+      res.status(200).json({ status: "Success", expertData });
+    } else {
+      res
+        .status(404)
+        .json({ status: "Data not found", message: "NO expert data found" });
+    }
+    console.log(expertData);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ status: "error", message: "sercer error" });
+  }
+};

@@ -19,20 +19,21 @@ import { Avatar } from "@mui/material";
 import Logo from "../../images/logo.png";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
 export const AdminSkeleton = (props) => {
+  console.log(props.props.type.name);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [activeItem, setActiveItem] = React.useState("");
+
   const navigate = useNavigate();
   const adminToken = localStorage.getItem("adminToken");
   console.log(adminToken);
   useEffect(() => {
-    if (adminToken) {
-      navigate("/admin/home");
-    } else {
+    if (!adminToken) {
       navigate("/admin/signin");
     }
   }, [adminToken, navigate]);
@@ -71,13 +72,31 @@ export const AdminSkeleton = (props) => {
       </Toolbar>
       <Divider />
       <List sx={{ backgroundColor: "black" }}>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton sx={{ color: "white" }}>
+        {[
+          { text: "Dashboard", href: "/admin/home" },
+          { text: "Users", href: "/admin/users" },
+          { text: "Experts", href: "/admin/experts" },
+          { text: "Drafts", href: "/admin/drafts" },
+        ].map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={item.href}
+              sx={{
+                color: "white",
+                backgroundColor:
+                  activeItem === item.text ? "primary.main" : "initial",
+                "&:hover": {
+                  backgroundColor: "primary.main",
+                  color: "white",
+                },
+              }}
+              onClick={() => setActiveItem(item.text)}
+            >
               <ListItemIcon sx={{ color: "white" }}>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {item.text === "Dashboard" ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -177,38 +196,11 @@ export const AdminSkeleton = (props) => {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
+          height: "650px",
         }}
       >
         <Toolbar />
-        <Typography sx={{ color: "white" }} paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
-        <Typography sx={{ color: "white" }} paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+        {props.props}
       </Box>
     </Box>
   );

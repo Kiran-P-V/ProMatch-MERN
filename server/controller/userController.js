@@ -23,6 +23,7 @@ const postSignUp = async (req, res) => {
         const activationToken = createActivationToken(newUser);
         const url = `${CLIENT_URL}/user/activate/${activationToken}`;
         const fullName = firstName + lastName;
+
         sendMail(email, url, fullName);
         console.log("second");
         res.status(200).json({
@@ -34,7 +35,7 @@ const postSignUp = async (req, res) => {
     } else {
       res
         .status(401)
-        .json({ status: "error", error: "This email already exist" });
+        .json({ status: "error", message: "This email already exist" });
     }
   } catch (err) {
     console.error(err.message);
